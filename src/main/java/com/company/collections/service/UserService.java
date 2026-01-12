@@ -1,13 +1,11 @@
 package com.company.collections.service;
 
-import com.company.collections.dto.AddCompanyDto;
 import java.util.List;
 
 import com.company.collections.dto.CompanyDto;
 
-public interface AdminService {
-
-	CompanyDto addCompany(AddCompanyDto addCompanyDto);
+public interface UserService {
 	
 	List<CompanyDto> getCompanyList();
+
 }

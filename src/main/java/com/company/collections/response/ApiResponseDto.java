@@ -5,7 +5,7 @@ public class ApiResponseDto {
 	private String msg;
 	private Object data;
 	private Object error;
-	private Boolean flag;
+	private Boolean status;
 	
 	public String getMsg() {
 		return msg;
@@ -25,11 +25,11 @@ public class ApiResponseDto {
 	public void setError(Object error) {
 		this.error = error;
 	}
-	public Boolean getFlag() {
-		return flag;
+	public Boolean getStatus() {
+		return status;
 	}
-	public void setFlag(Boolean flag) {
-		this.flag = flag;
+	public void setStatus(Boolean flag) {
+		this.status = flag;
 	}
 
 }

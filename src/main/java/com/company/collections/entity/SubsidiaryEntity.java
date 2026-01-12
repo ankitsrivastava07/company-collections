@@ -5,20 +5,17 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
-import org.springframework.data.neo4j.core.schema.Relationship.Direction;
+import org.springframework.data.neo4j.core.schema.Property;
 
-@Node("Company")
-public class CompanyEntity {
+@Node
+public class SubsidiaryEntity {
 
     @Id
     @GeneratedValue
     private String id;
+    @Property("name")
     private String name;
-    private String careerURL;
-
-    @Relationship(type = "RELATION_WITH", direction = Direction.OUTGOING)
-    private List<SubsidiaryEntity> subsidiaryEntity;
+    private List<CompanyEntity> list;
 
     public String getId() {
         return id;
@@ -36,12 +33,12 @@ public class CompanyEntity {
         this.name = name;
     }
 
-    public String getCareerURl() {
-        return careerURL;
+    public List<CompanyEntity> getList() {
+        return list;
     }
 
-    public void setCareerURl(String url) {
-        this.careerURL = url;
+    public void setList(List<CompanyEntity> list) {
+        this.list = list;
     }
 
 }
