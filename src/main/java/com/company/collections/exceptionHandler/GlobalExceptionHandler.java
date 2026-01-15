@@ -3,6 +3,8 @@ package com.company.collections.exceptionHandler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.neo4j.driver.exceptions.ClientException;
@@ -54,21 +56,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
 
-/*
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<?> handleIllegalStateException(IllegalStateException exp) {
-        ApiResponseDto api = new ApiResponseDto();
-        if (exp.getCause() instanceof ClientException cltExp) {
-
-            api.setStatus(Boolean.FALSE);
-            api.setMsg("Company name field value is missing");
-            return new ResponseEntity<>(api, HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(exp.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-*/
-
 /*    @ExceptionHandler(Exception.class)
     public ProblemDetail handleAllExceptions(Exception ex) {
         // Find the Neo4j ClientException anywhere in the hierarchy
@@ -113,10 +100,21 @@ public class GlobalExceptionHandler {
         // 1. Log the full internal error for developers (Safe in logs, hidden from user)
         ApiResponseDto apiResponse = new ApiResponseDto();
         log.error("Database Integrity Violation: {}", ex.getMostSpecificCause().getMessage());
-        String msg = ex.getMessage();
-        if (msg.contains("already exists") && msg.contains("company")) {
+        String msg = ex.getMostSpecificCause().getMessage();
+        if (msg.contains("already exists ") && msg.contains("Company")) {
             apiResponse.setStatus(Boolean.FALSE);
-            apiResponse.setMsg("Company with same already exists in our records");
+
+            Pattern pattern = Pattern.compile("property\\s+`?(\\w+)`?\\s*=\\s*'(.*)'");
+            Matcher matcher = pattern.matcher(msg);
+
+            if (matcher.find()) {
+                String field = matcher.group(1);
+                String val = matcher.group(2).trim();
+                // Constructing a specific but safe message
+                String safeDetail = "The " + field + " '" + val + "' is already registered.";
+                apiResponse.setMsg(safeDetail);
+
+            }
             return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
         }
 
