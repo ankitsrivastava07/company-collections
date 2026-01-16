@@ -1,2 +1,2 @@
 // Valid insert
-CREATE (c:Company {id: '1', name: 'Microsoft', careerURL: 'https://careers.microsoft.com'});
+CREATE (c:Company {id: randomUUID(), name: 'Microsoft', careerURL: 'https://careers.microsoft.com'});
