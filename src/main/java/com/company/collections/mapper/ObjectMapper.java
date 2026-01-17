@@ -6,34 +6,16 @@ import java.util.stream.Collectors;
 import com.company.collections.dto.AddCompanyDto;
 import com.company.collections.dto.CompanyDto;
 import com.company.collections.entity.CompanyEntity;
+import org.modelmapper.ModelMapper;
 
 public class ObjectMapper {
+    private static ModelMapper mapper = new ModelMapper();
 
-	public static CompanyEntity convertCompanyDtoToEntity(AddCompanyDto addCompanyDto) {
+    public static <D> D convertDtoToEntity(Object source, Class<D> target) {
+        return mapper.map(source, target);
+    }
 
-		CompanyEntity companyEntity = new CompanyEntity();
-		companyEntity.setName(addCompanyDto.getName());
-		companyEntity.setCareerURl(addCompanyDto.getCareerUrl());
-
-		return companyEntity;
-	}
-	
-	public static CompanyDto convertCompanyEntityToDto(CompanyEntity companyEntity) {
-		
-		CompanyDto dto = new CompanyDto();
-		dto.setId(companyEntity.getId());
-		dto.setName(companyEntity.getName());
-		dto.setCareerUrl(companyEntity.getCareerURl());
-
-		return dto;
-	}
-
-	public static List<CompanyDto> getCompanyDtoList(List<CompanyEntity> list) {
-		
-		return list
-		.stream()
-		.map(e-> convertCompanyEntityToDto(e))
-		.collect(Collectors.toList());
-	}
-	
+    public static <D> D convertEntityToDto(Object source, Class<D> target) {
+        return mapper.map(source, target);
+    }
 }

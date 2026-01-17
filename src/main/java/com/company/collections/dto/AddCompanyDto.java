@@ -1,9 +1,13 @@
 package com.company.collections.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotNull;
 
+@Getter
+@Setter
 @Validated
 public class AddCompanyDto {
 
@@ -12,29 +16,7 @@ public class AddCompanyDto {
     private String jobUrlById;
     @NotNull(message = "Career url can't be empty")
     private String careerUrl;
+    private String createdBy;
 
-    public String getJobUrlById() {
-        return jobUrlById;
-    }
-
-    public void setJobUrlById(String jobUrl) {
-        this.jobUrlById = jobUrl;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCareerUrl() {
-        return careerUrl;
-    }
-
-    public void setCareerUrl(String careerUrl) {
-        this.careerUrl = careerUrl;
-    }
 
 }

@@ -1,47 +1,28 @@
 package com.company.collections.entity;
 
-import java.util.List;
-
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
-import org.springframework.data.neo4j.core.schema.Relationship.Direction;
+import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
+import java.util.Date;
 
+@Getter
+@Setter
 @Node("Company")
 public class CompanyEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
     private String id;
     private String name;
     private String careerURL;
-
-    @Relationship(type = "RELATION_WITH", direction = Direction.OUTGOING)
-    private List<SubsidiaryEntity> subsidiaryEntity;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCareerURl() {
-        return careerURL;
-    }
-
-    public void setCareerURl(String url) {
-        this.careerURL = url;
-    }
-
+    private String createdBy;
+    @CreatedDate
+    private Date createdDate;
+    @LastModifiedDate
+    private Date lastModifiedDate;
 }

@@ -101,7 +101,9 @@ public class GlobalExceptionHandler {
         ApiResponseDto apiResponse = new ApiResponseDto();
         log.error("Database Integrity Violation: {}", ex.getMostSpecificCause().getMessage());
         String msg = ex.getMostSpecificCause().getMessage();
-        if (msg.contains("already exists ") && msg.contains("Company")) {
+        if (msg.contains("Index entry conflict") &&
+                msg.contains("already exists with label")
+                && msg.contains("Company")) {
             apiResponse.setStatus(Boolean.FALSE);
 
             Pattern pattern = Pattern.compile("property\\s+`?(\\w+)`?\\s*=\\s*'(.*)'");
