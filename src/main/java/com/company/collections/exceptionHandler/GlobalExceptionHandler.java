@@ -117,14 +117,12 @@ public class GlobalExceptionHandler {
 
             if (matcher.find()) {
                 Map<String, Object> err = new HashMap<>();
-                err.put("message", msg);
                 String field = matcher.group(1);
                 String val = matcher.group(2).trim();
                 // Constructing a specific but safe message
                 String safeDetail = "The " + field + " '" + val + "' is already registered.";
                 err.put("error", safeDetail);
                 apiError.setErrors(Arrays.asList(err));
-                apiError.setMessage(safeDetail);
                 return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
 
             }
