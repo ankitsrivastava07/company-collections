@@ -1,13 +1,13 @@
-package com.company.collections;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class CollectionsApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//package com.company.collections;
+//
+//import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class CollectionsApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}

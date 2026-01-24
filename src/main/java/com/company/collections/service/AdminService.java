@@ -9,7 +9,7 @@ import com.company.collections.response.ApiResponseDto;
 
 public interface AdminService {
 
-    CompanyDto addCompany(AddCompanyDto addCompanyDto);
+    ApiResponseDto addCompany(AddCompanyDto addCompanyDto);
 
     ApiResponseDto deleteCompanyById(String companyId);
 

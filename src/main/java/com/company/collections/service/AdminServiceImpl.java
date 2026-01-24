@@ -21,10 +21,16 @@ public class AdminServiceImpl implements AdminService {
     private CompanyRepository companyRepository;
 
     @Override
-    public CompanyDto addCompany(AddCompanyDto addCompanyDto) {
+    public ApiResponseDto addCompany(AddCompanyDto addCompanyDto) {
         CompanyEntity companyEntity = ObjectMapper.convertDtoToEntity(addCompanyDto, CompanyEntity.class);
         companyEntity = companyRepository.save(companyEntity);
-        return ObjectMapper.convertEntityToDto(companyEntity, CompanyDto.class);
+
+        ApiResponseDto apiResponseDto = new ApiResponseDto();
+        apiResponseDto.setMsg("Successfully added company data");
+        apiResponseDto.setStatus(true);
+        apiResponseDto.setData(ObjectMapper.convertEntityToDto(companyEntity, CompanyDto.class));
+
+        return apiResponseDto;
     }
 
     @Override

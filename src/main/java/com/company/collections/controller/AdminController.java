@@ -1,5 +1,6 @@
 package com.company.collections.controller;
 
+import com.company.collections.response.ApiResponseDto;
 import com.company.collections.service.DatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +24,8 @@ public class AdminController {
 
     @PostMapping("/add-company-data")
     public ResponseEntity<?> addCompanyData(@RequestBody @Valid AddCompanyDto addCompanyDto) {
-        CompanyDto companyDto = adminService.addCompany(addCompanyDto);
-        return new ResponseEntity<>(companyDto, HttpStatus.CREATED);
+        ApiResponseDto apiResponseDto = adminService.addCompany(addCompanyDto);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping
