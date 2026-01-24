@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import tools.jackson.databind.exc.InvalidFormatException;
+
 import com.company.collections.dto.error.ApiError;
+import com.company.collections.dto.error.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.company.collections.response.ApiResponseDto;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static com.company.collections.utility.JobCollectionConstant.INTERNAL_SERVER_ERROR;
@@ -36,13 +38,10 @@ public class GlobalExceptionHandler {
 
         List<FieldError> errors = exp.getFieldErrors();
         Map<String, String> fieldErr = new HashMap<>();
-        errors
-                .stream()
-                .map(e -> {
-                    fieldErr.put(e.getField(), e.getDefaultMessage());
-                    return fieldErr;
-                })
-                .toList();
+        errors.stream().map(e -> {
+            fieldErr.put(e.getField(), e.getDefaultMessage());
+            return fieldErr;
+        }).toList();
 
         apiError.setErrors(fieldErr);
         apiError.setStatus(Boolean.FALSE);
@@ -107,9 +106,7 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError();
         log.error("Database Integrity Violation: {}", ex.getMostSpecificCause().getMessage());
         String msg = ex.getMostSpecificCause().getMessage();
-        if (msg.contains("Index entry conflict") &&
-                msg.contains("already exists with label")
-                && msg.contains("Company")) {
+        if (msg.contains("Index entry conflict") && msg.contains("already exists with label") && msg.contains("Company")) {
             apiError.setStatus(Boolean.FALSE);
 
             Pattern pattern = Pattern.compile("property\\s+`?(\\w+)`?\\s*=\\s*'(.*)'");
@@ -140,13 +137,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException exp) {
-        log.info("Http message not readable {}", exp.getLocalizedMessage());
-        ApiError apiError = new ApiError();
-        apiError.setMessage("Malformed JSON request");
-        apiError.setStatus(Boolean.FALSE);
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String target = "request_body";
+        String reason = "Malformed JSON";
+
+        if (ex.getCause() instanceof InvalidFormatException ife) {
+            // Correct way to get the field path in 2026
+            //   target = ife.getPath().stream().map(JsonMappingException.Reference::getFieldName).filter(java.util.Objects::nonNull).collect(Collectors.joining("."));
+            reason = String.format("Value '%s' is invalid for type %s", ife.getValue(), ife.getTargetType().getSimpleName());
+        }
+
+        return ResponseEntity.badRequest().body(new ErrorResponse("BAD_REQUEST", "Invalid Input", System.currentTimeMillis(), List.of(new ErrorResponse.ErrorDetail(target, reason))));
+
     }
+
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(Throwable exp) {
