@@ -137,7 +137,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ResponseEntity<?> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+
+        ApiError apiError = new ApiError();
         String target = "request_body";
         String reason = "Malformed JSON";
 
@@ -147,10 +149,12 @@ public class GlobalExceptionHandler {
             reason = String.format("Value '%s' is invalid for type %s", ife.getValue(), ife.getTargetType().getSimpleName());
         }
 
-        return ResponseEntity.badRequest().body(new ErrorResponse("BAD_REQUEST", "Invalid Input", System.currentTimeMillis(), List.of(new ErrorResponse.ErrorDetail(target, reason))));
-
+        apiError.setMessage(reason);
+        apiError.setTimestamp(System.currentTimeMillis());
+        apiError.setStatus(Boolean.FALSE);
+        apiError.setErrors("Invalid Json Format");
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
-
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(Throwable exp) {
