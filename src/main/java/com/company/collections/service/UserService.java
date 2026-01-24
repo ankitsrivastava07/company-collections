@@ -1,11 +1,9 @@
 package com.company.collections.service;
 
-import java.util.List;
-
-import com.company.collections.dto.CompanyDto;
+import com.company.collections.response.ApiResponseDto;
 
 public interface UserService {
-	
-	List<CompanyDto> getCompanyList();
+
+    ApiResponseDto getCompanyList();
 
 }

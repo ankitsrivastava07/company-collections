@@ -13,7 +13,7 @@ import com.company.collections.service.AdminService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/admin/add-company-data")
+@RequestMapping("/api/v1/admin")
 public class AdminController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class AdminController {
     @Autowired
     private DatabaseService databaseService;
 
-    @PostMapping
+    @PostMapping("/add-company-data")
     public ResponseEntity<?> addCompanyData(@RequestBody @Valid AddCompanyDto addCompanyDto) {
         CompanyDto companyDto = adminService.addCompany(addCompanyDto);
         return new ResponseEntity<>(companyDto, HttpStatus.CREATED);
@@ -31,6 +31,11 @@ public class AdminController {
     public ResponseEntity<?> getCompanyList() {
         return new ResponseEntity<>(adminService.getCompanyList(),
                 HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<?> deleteCompanyDataById(@PathVariable String companyId) {
+        return new ResponseEntity<>(adminService.deleteCompanyById(companyId), HttpStatus.OK);
     }
 
     @GetMapping("/db")

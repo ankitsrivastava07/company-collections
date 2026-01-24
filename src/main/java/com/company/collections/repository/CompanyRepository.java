@@ -13,5 +13,8 @@ public interface CompanyRepository extends Neo4jRepository<CompanyEntity, String
 
     @Query("MATCH (n:Company) " +
             "RETURN n ORDER BY n.createdDate")
-    List<CompanyEntity> findAllCompany(Sort sort);
+    List<CompanyEntity> findAllCompany();
+
+    @Query("MATCH (c:Company) WHERE elementId(c) = '?1' DETACH DELETE c")
+    void deleteById(Long companyId);
 }

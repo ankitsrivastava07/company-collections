@@ -4,5 +4,7 @@ import com.company.collections.entity.CompanyEntity;
 
 public interface AdminDao {
 
-	CompanyEntity addCompanyData(CompanyEntity companyEntity);
+    CompanyEntity addCompanyData(CompanyEntity companyEntity);
+
+    void deleteCompanyById(Long companyId);
 }

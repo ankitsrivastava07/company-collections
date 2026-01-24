@@ -8,12 +8,17 @@ import com.company.collections.repository.CompanyRepository;
 
 @Repository
 public class AdminDaoImpl implements AdminDao {
-	
-	@Autowired
-	private CompanyRepository companyRepository;
 
-	@Override
-	public CompanyEntity addCompanyData(CompanyEntity companyEntity) {
-		return companyRepository.save(companyEntity);
-	}
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Override
+    public CompanyEntity addCompanyData(CompanyEntity companyEntity) {
+        return companyRepository.save(companyEntity);
+    }
+
+    @Override
+    public void deleteCompanyById(Long companyId) {
+        companyRepository.deleteById(companyId);
+    }
 }

@@ -3,6 +3,7 @@ package com.company.collections.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.company.collections.response.ApiResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.company.collections.dto.AddCompanyDto;
@@ -10,6 +11,8 @@ import com.company.collections.dto.CompanyDto;
 import com.company.collections.entity.CompanyEntity;
 import com.company.collections.mapper.ObjectMapper;
 import com.company.collections.repository.CompanyRepository;
+
+import static com.company.collections.utility.JobCollectionConstant.DELETED_COMPANY_SUCCESS_MSG;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -33,6 +36,17 @@ public class AdminServiceImpl implements AdminService {
                         ObjectMapper.convertEntityToDto(e, CompanyDto.class))
                 .collect(Collectors
                         .toList());
+    }
+
+    @Override
+    public ApiResponseDto deleteCompanyById(String companyId) {
+
+        companyRepository.deleteById(companyId);
+        ApiResponseDto apiResponseDto = new ApiResponseDto();
+        apiResponseDto.setMsg(DELETED_COMPANY_SUCCESS_MSG);
+        apiResponseDto.setStatus(Boolean.TRUE);
+
+        return apiResponseDto;
     }
 
 }
