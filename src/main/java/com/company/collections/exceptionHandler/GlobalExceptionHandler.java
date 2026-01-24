@@ -1,5 +1,6 @@
 package com.company.collections.exceptionHandler;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,20 +107,27 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError();
         log.error("Database Integrity Violation: {}", ex.getMostSpecificCause().getMessage());
         String msg = ex.getMostSpecificCause().getMessage();
-        if (msg.contains("Index entry conflict") && msg.contains("already exists with label") && msg.contains("Company")) {
+        if (msg.contains("Index entry conflict") && msg.contains("already exists with label")
+                &&
+                msg.contains("Company")) {
             apiError.setStatus(Boolean.FALSE);
 
             Pattern pattern = Pattern.compile("property\\s+`?(\\w+)`?\\s*=\\s*'(.*)'");
             Matcher matcher = pattern.matcher(msg);
 
             if (matcher.find()) {
+                Map<String, Object> err = new HashMap<>();
+                err.put("message", msg);
                 String field = matcher.group(1);
                 String val = matcher.group(2).trim();
                 // Constructing a specific but safe message
                 String safeDetail = "The " + field + " '" + val + "' is already registered.";
+                err.put("error", safeDetail);
+                apiError.setErrors(Arrays.asList(err));
                 apiError.setMessage(safeDetail);
+                return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+
             }
-            return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
         }
 
         apiError.setStatus(Boolean.FALSE);
@@ -139,6 +147,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
 
+        log.info("Method not supported {}", ex.getLocalizedMessage());
         ApiError apiError = new ApiError();
         String target = "request_body";
         String reason = "Malformed JSON";
@@ -146,7 +155,9 @@ public class GlobalExceptionHandler {
         if (ex.getCause() instanceof InvalidFormatException ife) {
             // Correct way to get the field path in 2026
             //   target = ife.getPath().stream().map(JsonMappingException.Reference::getFieldName).filter(java.util.Objects::nonNull).collect(Collectors.joining("."));
-            reason = String.format("Value '%s' is invalid for type %s", ife.getValue(), ife.getTargetType().getSimpleName());
+            reason = String.format("Value '%s' is invalid for type %s",
+                    ife.getValue(),
+                    ife.getTargetType().getSimpleName());
         }
 
         apiError.setMessage(reason);
