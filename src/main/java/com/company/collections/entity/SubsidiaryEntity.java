@@ -8,7 +8,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 
 @Node
-public class SubsidiaryEntity {
+public class SubsidiaryCompanyEntity {
     @Id
     @GeneratedValue
     private String id;
